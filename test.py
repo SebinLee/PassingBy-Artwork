@@ -36,16 +36,27 @@ while True :
         cv2.threshold(grayscaled_frame, boundary, maxValue, cv2.THRESH_BINARY) : Grayscale로 변환된 Frame을 Boundary 값을 기준으로 이진화 해주는 코드
         cv2.bitwise_not(frame) : frame을 반전시켜주는 코드
         cv2.findContours(binaryFrame, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE) : binaryframe에서 Contour 좌표값을 가져오는 코드
+        cv2.blur(frame, (verticalBlur, HorizontalBlur)) : frame에 blur를 적용할 수 있는 코드
         """
+
 
         grayscale = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
         _, binary = cv2.threshold(grayscale,thresholdBoundary,maxValue,cv2.THRESH_BINARY)
         binary = cv2.bitwise_not(binary)
+        binary = cv2.blur(binary,(10,10))
         contours, hierachy = cv2.findContours(binary,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
 
+        for i in contours :
+            if len(i) > 30 : cv2.drawContours(grayscale, [i], 0, (0, 0, 255), 2)
 
-        for i in range(len(contours)) : cv2.drawContours(grayscale, [contours[i]], 0, (0, 0, 255), 2)
+        cv2.imshow("TEST",binary)
         cv2.imshow("src", grayscale)
+
+
+        #To use Camera Image to Draw Contours, it should be converted to numpy.ndarray
+
+        print(type(capture))
+        print(type(grayscale))
 
     
     else :
