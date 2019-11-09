@@ -2,6 +2,8 @@ import cv2
 import time
 import numpy as np
 
+contourList = list()
+
 def makeContours(frame) :
 
     """
@@ -21,14 +23,12 @@ def makeContours(frame) :
     binary = cv2.blur(binary,(10,10))
     contours, hierachy = cv2.findContours(binary,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_NONE)
 
-    contours = sortContours(contours)
-
-    return contours
-
-def sortContours(contours) :
+    sortAddContours(contours)
+    
+def sortAddContours(contours) :
     
     lenContours = []
-    returnContours = []
+    addContours = []
 
     for i in contours : lenContours.append(len(i))
 
@@ -36,12 +36,12 @@ def sortContours(contours) :
 
         index = lenContours.index(max(lenContours))
         tmpContour = contours.pop(index)
-        returnContours.append(tmpContour)
+        addContours.append(tmpContour)
 
         lenContours.pop(index)
 
-
-    return returnContours
+    if(len(contourList) > 255) : coutourList.pop(0)
+    contourList.append(addContours)
 
 
 
@@ -59,7 +59,6 @@ framerate = 30
 framerate_waittime= 1.0/framerate
 
 blackImage = cv2.imread("blackScreen.jpg",cv2.IMREAD_ANYCOLOR)
-blackImage = cv2.cvtColor(blackImage,cv2.COLOR_RGB2RGBA)
 
 while True :
 
@@ -70,13 +69,15 @@ while True :
     """
 
     ret, frame = capture.read()
+    background = blackImage
 
     if ret :
 
-        contours = makeContours(frame)
+        makeContours(frame)
 
-        for i in contours :
-            cv2.drawContours(blackImage, [i], 0, (0, 0, 255,10), 2)
+        for contour in contourList :
+            for i in contour :
+                cv2.drawContours(background, [i], 0, (0, 0, 255), 2)
 
         """
         for i in range(len(imageList)) :
@@ -87,7 +88,7 @@ while True :
         """
             
 
-        cv2.imshow("src", blackImage)
+        cv2.imshow("src", background)
 
 
         #To use Camera Image to Draw Contours, it should be converted to numpy.ndarray
