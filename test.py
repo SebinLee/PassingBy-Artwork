@@ -40,7 +40,7 @@ def sortAddContours(contours) :
 
         lenContours.pop(index)
 
-    if(len(contourList) > 255) : coutourList.pop(0)
+    if(len(contourList) > 5) : contourList.pop(0)
     contourList.append(addContours)
 
 
@@ -58,8 +58,6 @@ capture.set(cv2.CAP_PROP_FRAME_HEIGHT,720)
 framerate = 30
 framerate_waittime= 1.0/framerate
 
-blackImage = cv2.imread("blackScreen.jpg",cv2.IMREAD_ANYCOLOR)
-
 while True :
 
     """
@@ -69,12 +67,12 @@ while True :
     """
 
     ret, frame = capture.read()
-    background = blackImage
+    background = cv2.imread("blackScreen.jpg",cv2.IMREAD_ANYCOLOR)
 
     if ret :
-
         makeContours(frame)
 
+        print(len(contourList))
         for contour in contourList :
             for i in contour :
                 cv2.drawContours(background, [i], 0, (0, 0, 255), 2)
