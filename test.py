@@ -72,6 +72,8 @@ capture.set(cv2.CAP_PROP_FRAME_HEIGHT,720)
 framerate = 10
 framerate_waittime= 1.0/framerate
 
+showCameraImage = True
+
 while True :
 
     """
@@ -81,6 +83,7 @@ while True :
     """
 
     ret, frame = capture.read()
+    
     background = cv2.imread("blackScreen.jpg",cv2.IMREAD_ANYCOLOR)
     showImage = background.copy()
 
@@ -97,10 +100,10 @@ while True :
             showImage = cv2.addWeighted(overlayBackground,0.5,showImage,0.8,0)
 
 
+        if(showCameraImage == True) :
+            showImage = cv2.addWeighted(showImage,1,frame,0.5,0)
+
         cv2.imshow("src", showImage)
-
-
-        #To use Camera Image to Draw Contours, it should be converted to numpy.ndarray
 
     
     else :
